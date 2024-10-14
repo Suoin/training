@@ -1,26 +1,53 @@
-# # Проверка наличия элемента во вложенных списках
-# def nested_list_contains(nested_list, target):
-#     for item in nested_list:
-#         if item == target:
-#             return True
-#         elif isinstance(item, list):
-#             if nested_list_contains(item, target):
-#                 return True
-#     return False
-#
-# my_list = [1, 2, [3, 4, [5, 6]], 7, [8, 9]]
-# result = nested_list_contains(my_list, 5)
-# print(result)
-#
-# my_list = [1, 2, [3, 4, [5, 6]], 7, [8, [9, 10]]]
-# result = count_elements(my_list)
-# print(result)
+board = [" " for _ in range(9)]
 
-def test_range(number, range_start, range_end):
-   if not (range_start <= number <= range_end):
-       print("Число {} не попадает в диапазон между {} и {}".format(number, range_start, range_end))
+def draw_board():
+    print("-"*13)
+    for i in range(3):
+        row = "| " + " | ".join(board[i*3:i*3+3]) + " |"
+        print(row)
+        print("-"* 13)
 
-x = 5
-z = 3
-y = 12
-test_range(3,5,12)
+def make_move(player):
+    valid_move = False
+    while not valid_move:
+        position = int(input("Выберите позицию для хода (1-9): ")) - 1
+        if position >= 0 and position < 9 and board[position] == " ":
+            board[position] = player
+            valid_move = True
+        else:
+            print("Неправильный ход. Попробуйте еще раз.")
+
+def check_winner(player):
+    winning_combinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ]
+    for combination in winning_combinations:
+        if all(board[position] == player for position in combination):
+            return True
+    return False
+
+def check_draw():
+    return " " not in board
+
+def play_game():
+    draw_board()
+    while True:
+        make_move("X")
+        draw_board()
+        if check_winner("X"):
+            print("Игрок X победил!")
+            break
+        if check_draw():
+            print("Ничья!")
+            break
+        make_move("O")
+        draw_board()
+        if check_winner("O"):
+            print("Игрок O победил!")
+            break
+        if check_draw():
+            print("Ничья!")
+
+play_game()
